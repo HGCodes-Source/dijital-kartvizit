@@ -5,7 +5,7 @@ import { requireUser, hashPassword, verifyPassword } from "@/lib/auth";
 import { updateUser } from "@/lib/db";
 
 export async function saveCardAction(prevState, formData) {
-  const user = requireUser();
+  const user = await requireUser();
   const raw = String(formData.get("cardJson") || "{}");
 
   let card;
@@ -19,7 +19,7 @@ export async function saveCardAction(prevState, formData) {
     return { error: "İsim alanı boş bırakılamaz.", ok: false };
   }
 
-  updateUser(user.id, {
+  await updateUser(user.id, {
     card: {
       name: card.name || "",
       title: card.title || "",
@@ -37,7 +37,7 @@ export async function saveCardAction(prevState, formData) {
 }
 
 export async function changePasswordAction(prevState, formData) {
-  const user = requireUser();
+  const user = await requireUser();
   const current = String(formData.get("currentPassword") || "");
   const next = String(formData.get("newPassword") || "");
 
@@ -48,6 +48,6 @@ export async function changePasswordAction(prevState, formData) {
     return { error: "Yeni şifre en az 6 karakter olmalı." };
   }
 
-  updateUser(user.id, { passwordHash: hashPassword(next) });
+  await updateUser(user.id, { passwordHash: hashPassword(next) });
   return { error: null, ok: true };
 }

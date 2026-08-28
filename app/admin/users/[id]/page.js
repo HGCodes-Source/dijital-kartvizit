@@ -5,9 +5,9 @@ import { getUserById } from "@/lib/db";
 import EditUserForm from "./EditUserForm";
 import { deleteUserAction } from "../../actions";
 
-export default function EditUserPage({ params }) {
-  requireAdmin();
-  const user = getUserById(params.id);
+export default async function EditUserPage({ params }) {
+  await requireAdmin();
+  const user = await getUserById(params.id);
   if (!user || user.role !== "user") notFound();
 
   return (

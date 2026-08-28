@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Icon from "./IconMap";
 import { getPlatform } from "@/lib/platforms";
 
@@ -34,10 +35,19 @@ function ChipMark() {
 }
 
 export default function CardPreview({ card, vcardHref, qrValue, slug }) {
+  const [copiedId, setCopiedId] = useState(null);
   const links = (card.links || [])
     .filter((l) => l.visible)
     .sort((a, b) => a.order - b.order);
   const iconLinks = links.filter((l) => getPlatform(l.platform).showAsIcon);
+
+  function handleCopy(id, value) {
+    if (navigator?.clipboard) {
+      navigator.clipboard.writeText(value).catch(() => {});
+    }
+    setCopiedId(id);
+    setTimeout(() => setCopiedId((cur) => (cur === id ? null : cur)), 1800);
+  }
 
   return (
     <div className="mx-auto w-full max-w-[340px] overflow-hidden rounded-[1.75rem] border border-black/5 bg-white shadow-foilGlow">
@@ -126,6 +136,37 @@ export default function CardPreview({ card, vcardHref, qrValue, slug }) {
         )}
         {links.map((l) => {
           const p = getPlatform(l.platform);
+
+          if (p.copyable) {
+            const isCopied = copiedId === l.id;
+            return (
+              <button
+                key={l.id}
+                type="button"
+                onClick={() => handleCopy(l.id, l.value)}
+                className="flex w-full items-center justify-between rounded-xl bg-white px-4 py-3 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+              >
+                <span className="flex items-center gap-3">
+                  <span
+                    className="flex h-8 w-8 items-center justify-center rounded-lg"
+                    style={{ backgroundColor: `${p.color}1A` }}
+                  >
+                    <Icon name={p.icon} size={16} style={{ color: p.color }} />
+                  </span>
+                  <span className="flex flex-col">
+                    <span className="text-sm font-medium">{p.buttonLabel}</span>
+                    <span className="font-mono text-[11px] text-slate">{l.value}</span>
+                  </span>
+                </span>
+                <Icon
+                  name={isCopied ? "Check" : "Copy"}
+                  size={16}
+                  className={isCopied ? "text-green-600" : "text-slate"}
+                />
+              </button>
+            );
+          }
+
           return (
             <a
               key={l.id}

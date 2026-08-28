@@ -2,8 +2,8 @@ import { requireUser } from "@/lib/auth";
 import { logoutAction } from "@/lib/logout";
 import PanelEditor from "./PanelEditor";
 
-export default function PanelPage() {
-  const user = requireUser();
+export default async function PanelPage() {
+  const user = await requireUser();
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
 
   return (

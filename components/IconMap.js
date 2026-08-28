@@ -23,6 +23,13 @@ import {
   EyeOff,
   QrCode,
   Download,
+  Landmark,
+  Store,
+  Copy,
+  Check,
+  Camera,
+  Upload,
+  X,
 } from "lucide-react";
 
 const ICONS = {
@@ -48,6 +55,13 @@ const ICONS = {
   EyeOff,
   QrCode,
   Download,
+  Landmark,
+  Store,
+  Copy,
+  Check,
+  Camera,
+  Upload,
+  X,
 };
 
 export default function Icon({ name, ...props }) {

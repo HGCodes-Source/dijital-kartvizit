@@ -3,6 +3,7 @@
 import { useMemo, useRef, useState, useTransition } from "react";
 import Icon from "@/components/IconMap";
 import CardPreview from "@/components/CardPreview";
+import AvatarUploader from "@/components/AvatarUploader";
 import { PLATFORM_KEYS, getPlatform } from "@/lib/platforms";
 import { saveCardAction, changePasswordAction } from "./actions";
 
@@ -129,17 +130,6 @@ export default function PanelEditor({ initialCard, slug, baseUrl }) {
             </div>
             <div>
               <label className="mb-1 block text-xs font-medium text-slate">
-                Profil Fotoğrafı URL (opsiyonel)
-              </label>
-              <input
-                value={card.avatarUrl}
-                onChange={(e) => update("avatarUrl", e.target.value)}
-                placeholder="https://..."
-                className="w-full rounded-lg border border-black/10 px-3 py-2.5 text-sm outline-none focus:border-ink"
-              />
-            </div>
-            <div>
-              <label className="mb-1 block text-xs font-medium text-slate">
                 Kart Rengi
               </label>
               <input
@@ -149,6 +139,14 @@ export default function PanelEditor({ initialCard, slug, baseUrl }) {
                 className="h-10 w-full rounded-lg border border-black/10"
               />
             </div>
+          </div>
+
+          <div className="mt-4 border-t border-black/5 pt-4">
+            <AvatarUploader
+              name={card.name}
+              value={card.avatarUrl}
+              onChange={(v) => update("avatarUrl", v)}
+            />
           </div>
         </section>
 

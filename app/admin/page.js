@@ -4,9 +4,10 @@ import { getUsers } from "@/lib/db";
 import { toggleActiveAction } from "./actions";
 import { logoutAction } from "@/lib/logout";
 
-export default function AdminPage() {
-  const admin = requireAdmin();
-  const users = getUsers().filter((u) => u.role === "user");
+export default async function AdminPage() {
+  const admin = await requireAdmin();
+  const allUsers = await getUsers();
+  const users = allUsers.filter((u) => u.role === "user");
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
 
   return (

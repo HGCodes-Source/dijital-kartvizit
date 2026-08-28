@@ -8,7 +8,7 @@ export async function loginAction(prevState, formData) {
   const email = String(formData.get("email") || "").trim();
   const password = String(formData.get("password") || "");
 
-  const user = getUserByEmail(email);
+  const user = await getUserByEmail(email);
   if (!user || !verifyPassword(password, user.passwordHash)) {
     return { error: "E-posta veya şifre hatalı." };
   }

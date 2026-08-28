@@ -22,7 +22,7 @@ function slugify(text) {
 }
 
 export async function createUserAction(prevState, formData) {
-  requireAdmin();
+  await requireAdmin();
 
   const email = String(formData.get("email") || "").trim();
   const password = String(formData.get("password") || "");
@@ -33,17 +33,17 @@ export async function createUserAction(prevState, formData) {
   if (!email || !password || !name || !slug) {
     return { error: "E-posta, şifre, isim ve URL adresi zorunludur." };
   }
-  if (emailExists(email)) {
+  if (await emailExists(email)) {
     return { error: "Bu e-posta ile kayıtlı bir kullanıcı zaten var." };
   }
   let finalSlug = slug;
   let n = 2;
-  while (slugExists(finalSlug)) {
+  while (await slugExists(finalSlug)) {
     finalSlug = `${slug}-${n}`;
     n++;
   }
 
-  createUser({
+  await createUser({
     id: `user-${Date.now()}`,
     role: "user",
     email,
@@ -67,19 +67,19 @@ export async function createUserAction(prevState, formData) {
 }
 
 export async function updateUserAction(prevState, formData) {
-  requireAdmin();
+  await requireAdmin();
   const id = String(formData.get("id"));
-  const user = getUserById(id);
+  const user = await getUserById(id);
   if (!user) return { error: "Kullanıcı bulunamadı." };
 
   const email = String(formData.get("email") || "").trim();
   const password = String(formData.get("password") || "");
   let slug = slugify(String(formData.get("slug") || ""));
 
-  if (email && emailExists(email, id)) {
+  if (email && (await emailExists(email, id))) {
     return { error: "Bu e-posta başka bir kullanıcıda kayıtlı." };
   }
-  if (slug && slugExists(slug, id)) {
+  if (slug && (await slugExists(slug, id))) {
     return { error: "Bu URL adresi başka bir kullanıcı tarafından kullanılıyor." };
   }
 
@@ -88,25 +88,25 @@ export async function updateUserAction(prevState, formData) {
   if (slug) patch.slug = slug;
   if (password) patch.passwordHash = hashPassword(password);
 
-  updateUser(id, patch);
+  await updateUser(id, patch);
   revalidatePath("/admin");
   revalidatePath(`/admin/users/${id}`);
   redirect("/admin");
 }
 
 export async function toggleActiveAction(formData) {
-  requireAdmin();
+  await requireAdmin();
   const id = String(formData.get("id"));
-  const user = getUserById(id);
+  const user = await getUserById(id);
   if (!user) return;
-  updateUser(id, { active: !user.active });
+  await updateUser(id, { active: !user.active });
   revalidatePath("/admin");
 }
 
 export async function deleteUserAction(formData) {
-  requireAdmin();
+  await requireAdmin();
   const id = String(formData.get("id"));
-  deleteUser(id);
+  await deleteUser(id);
   revalidatePath("/admin");
   redirect("/admin");
 }
