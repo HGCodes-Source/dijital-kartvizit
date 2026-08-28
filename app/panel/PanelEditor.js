@@ -268,15 +268,20 @@ export default function PanelEditor({ initialCard, slug, baseUrl }) {
       {/* SAĞ: canlı önizleme */}
       <div className="lg:sticky lg:top-8 lg:self-start">
         <p className="mb-3 text-center text-xs font-medium text-slate">
-          Canlı Önizleme
+          Canlı Önizleme (kartın tasarımı — QR ve kaydet butonu gerçek
+          sayfada)
         </p>
-        <CardPreview
-          card={card}
-          qrValue={publicUrl}
-          vcardHref={`/kart/${slug}/vcard`}
-          slug={slug}
-        />
-        <p className="mt-4 break-all rounded-lg bg-black/[0.03] px-3 py-2 text-center text-[11px] text-slate">
+        <CardPreview card={card} slug={slug} hideActions />
+        <a
+          href={`/kart/${slug}`}
+          target="_blank"
+          rel="noreferrer"
+          className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-ink py-3 text-sm font-semibold text-white hover:bg-ink/90"
+        >
+          <Icon name="QrCode" size={16} />
+          Canlı Sayfayı Aç (QR / paylaşım için)
+        </a>
+        <p className="mt-3 break-all rounded-lg bg-black/[0.03] px-3 py-2 text-center text-[11px] text-slate">
           {publicUrl}
         </p>
       </div>

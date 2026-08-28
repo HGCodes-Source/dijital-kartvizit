@@ -34,7 +34,7 @@ function ChipMark() {
   );
 }
 
-export default function CardPreview({ card, vcardHref, qrValue, slug }) {
+export default function CardPreview({ card, vcardHref, qrValue, slug, hideActions }) {
   const [copiedId, setCopiedId] = useState(null);
   const links = (card.links || [])
     .filter((l) => l.visible)
@@ -189,7 +189,7 @@ export default function CardPreview({ card, vcardHref, qrValue, slug }) {
           );
         })}
 
-        {vcardHref && (
+        {!hideActions && vcardHref && (
           <a
             href={vcardHref}
             className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-foilStart to-foilEnd py-3 text-sm font-semibold text-carbon shadow-sm transition hover:brightness-105"
@@ -199,7 +199,7 @@ export default function CardPreview({ card, vcardHref, qrValue, slug }) {
           </a>
         )}
 
-        {qrValue && (
+        {!hideActions && qrValue && (
           <div className="flex flex-col items-center gap-2 pt-3">
             <div className="rounded-xl border border-black/5 bg-white p-2">
               {/* eslint-disable-next-line @next/next/no-img-element */}
