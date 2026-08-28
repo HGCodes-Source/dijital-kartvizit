@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body {
+  background: #F6F4EE;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Temassız (NFC) simgesi için nabız animasyonu — hareket azaltma tercihine saygılı */
+@media (prefers-reduced-motion: no-preference) {
+  .nfc-ring {
+    animation: nfcPulse 2.6s ease-out infinite;
+  }
+  .nfc-ring.delay {
+    animation-delay: 0.9s;
+  }
+}
+
+@keyframes nfcPulse {
+  0% {
+    opacity: 0.9;
+    transform: scale(0.85);
+  }
+  70% {
+    opacity: 0;
+    transform: scale(1.25);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.25);
+  }
+}

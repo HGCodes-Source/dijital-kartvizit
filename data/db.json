@@ -1,0 +1,38 @@
+{
+  "users": [
+    {
+      "id": "admin-1",
+      "role": "admin",
+      "email": "admin@example.com",
+      "passwordHash": "b1e9f463fd0fb9956ce5db66a139c814:36d50b6e78cc2172ac439902178cc03b359dfe7a5df380c79319b60533b4693ef53505d476a853e2356784069bda02ccab5ad9fdc7d04fdb065f5b567c42d777",
+      "active": true,
+      "createdAt": "2026-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "user-1",
+      "role": "user",
+      "email": "demo@example.com",
+      "passwordHash": "e63e0e03dc53ae9f7b134b44a4eb63d7:194b1689b4a94eb8de780b9f660914ae367e530ab7e6327938f4d903dd0d8d3e99ad74c54a195c1cf7399ea86bb5b0b566786d2b59ca7bae7aba377de577719e",
+      "slug": "elif-yilmaz",
+      "active": true,
+      "createdAt": "2026-01-01T00:00:00.000Z",
+      "card": {
+        "name": "Elif Yılmaz",
+        "title": "Dijital Pazarlama Uzmanı",
+        "company": "",
+        "avatarUrl": "",
+        "bio": "",
+        "theme": "#0F1B33",
+        "links": [
+          { "id": "l1", "platform": "phone", "value": "+905551112233", "visible": true, "order": 1 },
+          { "id": "l2", "platform": "whatsapp", "value": "905551112233", "visible": true, "order": 2 },
+          { "id": "l3", "platform": "email", "value": "elif@example.com", "visible": true, "order": 3 },
+          { "id": "l4", "platform": "instagram", "value": "elifyilmaz", "visible": true, "order": 4 },
+          { "id": "l5", "platform": "linkedin", "value": "elifyilmaz", "visible": true, "order": 5 },
+          { "id": "l6", "platform": "website", "value": "https://example.com", "visible": true, "order": 6 },
+          { "id": "l7", "platform": "location", "value": "https://maps.google.com/?q=Istanbul", "visible": true, "order": 7 }
+        ]
+      }
+    }
+  ]
+}
