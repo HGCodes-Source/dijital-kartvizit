@@ -12,12 +12,12 @@ export default async function EditUserPage({ params }) {
   if (!user || user.role !== "user") notFound();
 
   return (
-    <main className="mx-auto max-w-lg px-4 py-10">
+    <main className="mx-auto max-w-lg px-4 py-6 sm:py-10">
       <Link href="/admin" className="text-xs text-slate hover:underline">
         ← Panele dön
       </Link>
-      <div className="mt-2 flex items-center justify-between">
-        <h1 className="text-xl font-semibold">Hesabı Düzenle</h1>
+      <div className="mt-2 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+        <h1 className="text-lg font-semibold sm:text-xl">Hesabı Düzenle</h1>
         <Link
           href={`/kart/${user.slug}`}
           target="_blank"

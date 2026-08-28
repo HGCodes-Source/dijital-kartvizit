@@ -23,7 +23,7 @@ export default function EditUserForm({ user }) {
   return (
     <form
       action={formAction}
-      className="mt-4 space-y-4 rounded-xl2 border border-black/5 bg-white p-6"
+      className="mt-4 space-y-4 rounded-xl2 border border-black/5 bg-white p-4 sm:p-6"
     >
       <input type="hidden" name="id" value={user.id} />
 

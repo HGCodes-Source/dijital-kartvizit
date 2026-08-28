@@ -95,7 +95,7 @@ export default function PanelEditor({ initialCard, slug, baseUrl }) {
     <div className="grid gap-8 lg:grid-cols-[1fr_360px]">
       {/* SOL: form */}
       <div className="space-y-6">
-        <section className="rounded-xl2 border border-black/5 bg-white p-6">
+        <section className="rounded-xl2 border border-black/5 bg-white p-4 sm:p-6">
           <h2 className="mb-4 text-sm font-semibold">Temel Bilgiler</h2>
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
@@ -150,8 +150,8 @@ export default function PanelEditor({ initialCard, slug, baseUrl }) {
           </div>
         </section>
 
-        <section className="rounded-xl2 border border-black/5 bg-white p-6">
-          <div className="mb-4 flex items-center justify-between">
+        <section className="rounded-xl2 border border-black/5 bg-white p-4 sm:p-6">
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
             <h2 className="text-sm font-semibold">
               Bağlantılar &amp; Sosyal Medya
             </h2>
@@ -177,73 +177,77 @@ export default function PanelEditor({ initialCard, slug, baseUrl }) {
               return (
                 <div
                   key={l.id}
-                  className="flex flex-wrap items-center gap-2 rounded-lg border border-black/10 p-3"
+                  className="space-y-2 rounded-lg border border-black/10 p-3"
                 >
-                  <select
-                    value={l.platform}
-                    onChange={(e) =>
-                      updateLink(l.id, { platform: e.target.value })
-                    }
-                    className="rounded-lg border border-black/10 px-2 py-2 text-xs outline-none"
-                  >
-                    {PLATFORM_KEYS.map((key) => (
-                      <option key={key} value={key}>
-                        {getPlatform(key).label}
-                      </option>
-                    ))}
-                  </select>
+                  <div className="flex flex-col gap-2 sm:flex-row">
+                    <select
+                      value={l.platform}
+                      onChange={(e) =>
+                        updateLink(l.id, { platform: e.target.value })
+                      }
+                      className="rounded-lg border border-black/10 px-2 py-2 text-xs outline-none sm:w-40"
+                    >
+                      {PLATFORM_KEYS.map((key) => (
+                        <option key={key} value={key}>
+                          {getPlatform(key).label}
+                        </option>
+                      ))}
+                    </select>
 
-                  <input
-                    value={l.value}
-                    onChange={(e) =>
-                      updateLink(l.id, { value: e.target.value })
-                    }
-                    placeholder={platform.placeholder}
-                    className="min-w-[140px] flex-1 rounded-lg border border-black/10 px-3 py-2 text-xs outline-none focus:border-ink"
-                  />
-
-                  <button
-                    type="button"
-                    onClick={() => updateLink(l.id, { visible: !l.visible })}
-                    title={l.visible ? "Kartta gizle" : "Kartta göster"}
-                    className="rounded-lg border border-black/10 p-2 hover:bg-black/5"
-                  >
-                    <Icon
-                      name={l.visible ? "Eye" : "EyeOff"}
-                      size={14}
-                      className={l.visible ? "text-green-600" : "text-slate"}
+                    <input
+                      value={l.value}
+                      onChange={(e) =>
+                        updateLink(l.id, { value: e.target.value })
+                      }
+                      placeholder={platform.placeholder}
+                      className="flex-1 rounded-lg border border-black/10 px-3 py-2 text-xs outline-none focus:border-ink"
                     />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => moveLink(l.id, -1)}
-                    disabled={i === 0}
-                    className="rounded-lg border border-black/10 p-2 hover:bg-black/5 disabled:opacity-30"
-                  >
-                    <Icon name="ArrowUp" size={14} />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => moveLink(l.id, 1)}
-                    disabled={i === sortedLinks.length - 1}
-                    className="rounded-lg border border-black/10 p-2 hover:bg-black/5 disabled:opacity-30"
-                  >
-                    <Icon name="ArrowDown" size={14} />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => removeLink(l.id)}
-                    className="rounded-lg border border-red-200 p-2 text-red-600 hover:bg-red-50"
-                  >
-                    <Icon name="Trash2" size={14} />
-                  </button>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => updateLink(l.id, { visible: !l.visible })}
+                      title={l.visible ? "Kartta gizle" : "Kartta göster"}
+                      className="rounded-lg border border-black/10 p-2 hover:bg-black/5"
+                    >
+                      <Icon
+                        name={l.visible ? "Eye" : "EyeOff"}
+                        size={14}
+                        className={l.visible ? "text-green-600" : "text-slate"}
+                      />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => moveLink(l.id, -1)}
+                      disabled={i === 0}
+                      className="rounded-lg border border-black/10 p-2 hover:bg-black/5 disabled:opacity-30"
+                    >
+                      <Icon name="ArrowUp" size={14} />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => moveLink(l.id, 1)}
+                      disabled={i === sortedLinks.length - 1}
+                      className="rounded-lg border border-black/10 p-2 hover:bg-black/5 disabled:opacity-30"
+                    >
+                      <Icon name="ArrowDown" size={14} />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => removeLink(l.id)}
+                      className="ml-auto rounded-lg border border-red-200 p-2 text-red-600 hover:bg-red-50"
+                    >
+                      <Icon name="Trash2" size={14} />
+                    </button>
+                  </div>
                 </div>
               );
             })}
           </div>
         </section>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           <button
             onClick={handleSave}
             disabled={isPending}
@@ -309,7 +313,7 @@ function ChangePasswordBox() {
   }
 
   return (
-    <section className="rounded-xl2 border border-black/5 bg-white p-6">
+    <section className="rounded-xl2 border border-black/5 bg-white p-4 sm:p-6">
       <h2 className="mb-4 text-sm font-semibold">Şifreni Değiştir</h2>
       <form onSubmit={handleSubmit} className="grid gap-3 sm:grid-cols-2">
         <input

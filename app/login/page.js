@@ -22,7 +22,7 @@ export default function LoginPage() {
 
   return (
     <main className="flex min-h-screen items-center justify-center px-4">
-      <div className="w-full max-w-sm rounded-xl2 border border-black/5 bg-white p-8 shadow-sm">
+      <div className="w-full max-w-sm rounded-xl2 border border-black/5 bg-white p-6 shadow-sm sm:p-8">
         <div className="mb-6 flex items-center gap-2">
           <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-foilStart to-foilEnd text-sm font-bold text-carbon">
             DK

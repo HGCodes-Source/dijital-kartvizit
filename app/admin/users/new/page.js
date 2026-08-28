@@ -22,15 +22,15 @@ export default function NewUserPage() {
   const [state, formAction] = useActionState(createUserAction, { error: null });
 
   return (
-    <main className="mx-auto max-w-lg px-4 py-10">
+    <main className="mx-auto max-w-lg px-4 py-6 sm:py-10">
       <Link href="/admin" className="text-xs text-slate hover:underline">
         ← Panele dön
       </Link>
-      <h1 className="mb-6 mt-2 text-xl font-semibold">Yeni Kullanıcı Ekle</h1>
+      <h1 className="mb-6 mt-2 text-lg font-semibold sm:text-xl">Yeni Kullanıcı Ekle</h1>
 
       <form
         action={formAction}
-        className="space-y-4 rounded-xl2 border border-black/5 bg-white p-6"
+        className="space-y-4 rounded-xl2 border border-black/5 bg-white p-4 sm:p-6"
       >
         <div>
           <label className="mb-1 block text-xs font-medium text-slate">
