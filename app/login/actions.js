@@ -16,6 +16,6 @@ export async function loginAction(prevState, formData) {
     return { error: "Bu hesap devre dışı bırakılmış. Yöneticinizle iletişime geçin." };
   }
 
-  setSessionCookie(user.id);
+  await setSessionCookie(user.id);
   redirect(user.role === "admin" ? "/admin" : "/panel");
 }

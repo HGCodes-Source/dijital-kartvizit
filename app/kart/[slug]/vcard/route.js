@@ -2,7 +2,8 @@ import { getUserBySlug } from "@/lib/db";
 import { buildVCard } from "@/lib/vcard";
 
 export async function GET(request, { params }) {
-  const user = await getUserBySlug(params.slug);
+  const { slug } = await params;
+  const user = await getUserBySlug(slug);
   if (!user) {
     return new Response("Bulunamadı", { status: 404 });
   }

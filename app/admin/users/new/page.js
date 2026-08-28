@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useFormState, useFormStatus } from "react-dom";
+import { useActionState } from "react";
+import { useFormStatus } from "react-dom";
 import { createUserAction } from "../../actions";
 
 function SubmitButton() {
@@ -18,7 +19,7 @@ function SubmitButton() {
 }
 
 export default function NewUserPage() {
-  const [state, formAction] = useFormState(createUserAction, { error: null });
+  const [state, formAction] = useActionState(createUserAction, { error: null });
 
   return (
     <main className="mx-auto max-w-lg px-4 py-10">

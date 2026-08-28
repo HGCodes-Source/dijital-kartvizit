@@ -7,7 +7,8 @@ import { deleteUserAction } from "../../actions";
 
 export default async function EditUserPage({ params }) {
   await requireAdmin();
-  const user = await getUserById(params.id);
+  const { id } = await params;
+  const user = await getUserById(id);
   if (!user || user.role !== "user") notFound();
 
   return (
