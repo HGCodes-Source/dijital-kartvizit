@@ -26,6 +26,16 @@ export default async function EditUserPage({ params }) {
           Kartviziti görüntüle →
         </Link>
       </div>
+      <p className="mt-1 text-xs text-slate">
+        Müşteriye özel giriş linki:{" "}
+        <Link
+          href={`/${user.slug}/login`}
+          target="_blank"
+          className="text-blue-600 hover:underline"
+        >
+          /{user.slug}/login
+        </Link>
+      </p>
 
       <EditUserForm user={user} />
 

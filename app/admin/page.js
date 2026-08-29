@@ -88,6 +88,13 @@ export default async function AdminPage() {
                 {baseUrl.replace(/^https?:\/\//, "")}/kart/{u.slug}
               </Link>
               <Link
+                href={`/${u.slug}/login`}
+                target="_blank"
+                className="mt-0.5 block truncate text-xs text-slate hover:underline"
+              >
+                Giriş: {baseUrl.replace(/^https?:\/\//, "")}/{u.slug}/login
+              </Link>
+              <Link
                 href={`/admin/users/${u.id}`}
                 className="mt-3 block rounded-lg border border-black/10 px-3 py-1.5 text-center text-xs font-medium hover:bg-black/5"
               >
@@ -129,6 +136,16 @@ export default async function AdminPage() {
                     >
                       {baseUrl.replace(/^https?:\/\//, "")}/kart/{u.slug}
                     </Link>
+                    <div className="mt-0.5 text-xs text-slate">
+                      Giriş:{" "}
+                      <Link
+                        href={`/${u.slug}/login`}
+                        target="_blank"
+                        className="hover:underline"
+                      >
+                        /{u.slug}/login
+                      </Link>
+                    </div>
                   </td>
                   <td className="px-4 py-3">
                     <form action={toggleActiveAction}>
