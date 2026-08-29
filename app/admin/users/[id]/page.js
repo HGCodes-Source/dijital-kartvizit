@@ -4,6 +4,7 @@ import { requireAdmin } from "@/lib/auth";
 import { getUserById } from "@/lib/db";
 import EditUserForm from "./EditUserForm";
 import { deleteUserAction } from "../../actions";
+import SubscriptionBadge from "@/components/SubscriptionBadge";
 
 export default async function EditUserPage({ params }) {
   await requireAdmin();
@@ -36,6 +37,11 @@ export default async function EditUserPage({ params }) {
           /{user.slug}/login
         </Link>
       </p>
+
+      <section className="mt-4 rounded-xl2 border border-black/5 bg-white p-4 sm:p-6">
+        <h2 className="mb-3 text-sm font-semibold">Üyelik Durumu</h2>
+        <SubscriptionBadge user={user} compact />
+      </section>
 
       <EditUserForm user={user} />
 

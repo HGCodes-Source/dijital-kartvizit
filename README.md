@@ -117,6 +117,56 @@ bilgileri (e-posta, şifre hash'i, slug, aktif/pasif) ve kartvizit
 verisinin tamamı (`card` sütunu, JSONB) bulunur. Detaylar için
 `supabase/schema.sql` dosyasına bakabilirsiniz.
 
+## Üyelik / Deneme Süresi Sistemi
+
+Ödeme entegrasyonu **yok** (bilerek) — üyelik tamamen admin tarafından elle
+veriliyor. Şu şekilde çalışır:
+
+- **Yeni müşteri eklendiğinde** otomatik olarak **15 günlük ücretsiz deneme**
+  başlar.
+- Admin panelinde her müşterinin yanında **"1 Aylık Ver"** / **"1 Yıllık
+  Ver"** butonları var — bastığında müşterinin üyeliği o kadar uzatılır
+  (hesabın hâlâ süresi varsa mevcut bitiş tarihinin üzerine eklenir, süresi
+  dolmuşsa bugünden başlar) ve hesap otomatik olarak yeniden aktif olur.
+- **Süre dolduğunda** müşterinin kartviziti otomatik olarak pasif hale
+  gelir: hem her erişimde anlık kontrol edilir (müşteri giriş yapmaya
+  çalıştığında, kartvizit sayfası görüntülendiğinde, admin listesi
+  açıldığında), hem de **her gün 03:00'te** çalışan bir Vercel Cron görevi
+  (`/api/cron/deactivate-expired`) tüm süresi dolmuş hesapları toplu olarak
+  tarayıp pasife çeker — kimse siteye girmese bile.
+- Pasif hale gelen bir kartvizitin linkine (QR dahil) gidildiğinde boş bir
+  404 yerine **"Bu kartvizit şu anda aktif değil"** diye şık, markalı bir
+  sayfa gösterilir.
+
+### Mevcut (canlıdaki) veritabanına bu özelliği eklemek
+
+Daha önce `supabase/schema.sql`'i çalıştırıp elinde zaten müşteri verisi
+varsa, **schema.sql'i tekrar çalıştırma** (yeniden eklemeye çalışır, hata
+verebilir). Onun yerine sadece şunu çalıştır:
+
+1. Supabase panelinde **SQL Editor**'e gir
+2. Bu projedeki **`supabase/migration-membership.sql`** dosyasının
+   tamamını yapıştır, **Run**'a bas
+3. Bu, mevcut verileri SİLMEDEN sadece `plan` ve `expires_at` sütunlarını
+   ekler; var olan müşterilere kayıt tarihlerinden itibaren 15 günlük
+   deneme süresi tanımlar
+
+Yeni bir kurulum yapıyorsan (hiç veri yoksa) sadece güncel
+`supabase/schema.sql`'i çalıştırman yeterli, migration dosyasına gerek yok.
+
+### Günlük otomatik kontrol (Vercel Cron) kurulumu
+
+1. Vercel projenizde **Settings → Environment Variables**'a
+   `CRON_SECRET` adında, rastgele uzun bir metin değeri olan yeni bir
+   değişken ekleyin (Production için)
+2. `vercel.json` dosyası (projede zaten var) Vercel'e bu görevi günde bir
+   kez (`03:00`) otomatik çalıştırmasını söylüyor — ekstra bir kurulum
+   gerekmiyor, deploy ettiğinizde Vercel bunu kendi algılar
+3. Vercel panelinde **Settings → Cron Jobs** kısmından görevin
+   listelendiğini ve çalıştığını kontrol edebilirsiniz
+
+
+
 ## Teknik notlar
 
 - Next.js 14 (App Router) + Tailwind CSS, ekstra state-management kütüphanesi
@@ -140,21 +190,31 @@ verisinin tamamı (`card` sütunu, JSONB) bulunur. Detaylar için
 
 ```
 app/
-  login/            giriş sayfası + server action
-  admin/            yönetici paneli (kullanıcı CRUD)
+  login/            giriş sayfası + server action (admin ve genel giriş)
+  [slug]/login/     müşteriye özel, kişiselleştirilmiş giriş sayfası
+  admin/            yönetici paneli (kullanıcı CRUD + üyelik yönetimi)
   panel/            müşteri paneli (kart düzenleme + canlı önizleme)
   kart/[slug]/      herkese açık kartvizit sayfası + vCard indirme
+  api/cron/         günlük "süresi dolan üyelikleri pasife çek" görevi
+  not-found.js      404 sayfası
+  error.js          beklenmedik hata sayfası
 components/
-  CardPreview.js      kartvizit görünümü (panel ve public sayfa ortak kullanır)
-  AvatarUploader.js   profil fotoğrafı yükleme (küçültme/sıkıştırma dahil)
-  IconMap.js          lucide-react ikon eşleştirici
+  CardPreview.js       kartvizit görünümü (panel ve public sayfa ortak kullanır)
+  AvatarUploader.js    profil fotoğrafı yükleme (küçültme/sıkıştırma dahil)
+  IconMap.js           lucide-react ikon eşleştirici
+  IdleLogout.js        hareketsizlikte otomatik oturum kapatma
+  SubscriptionBadge.js üyelik durumu rozeti + "üyelik ver" butonları
 lib/
   db.js             Supabase üzerinden veri erişim katmanı
   supabaseClient.js Supabase client (service role, sunucu-only)
   auth.js           şifre hash + oturum yönetimi (asenkron)
+  subscription.js   deneme/üyelik süresi hesaplamaları
   platforms.js      desteklenen bağlantı/sosyal medya türleri (IBAN dahil)
   vcard.js          .vcf (vCard) üretimi
-supabase/schema.sql veritabanı şeması + demo veri (Supabase SQL Editor'e yapıştırılır)
+supabase/
+  schema.sql              yeni kurulum için tam şema + demo veri
+  migration-membership.sql mevcut veritabanına üyelik sütunlarını ekler
+vercel.json         günlük cron görevi zamanlaması
 ```
 
 ## Sırada ne var? (öneriler)

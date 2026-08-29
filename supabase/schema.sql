@@ -12,6 +12,8 @@ create table if not exists public.users (
   slug text unique,
   active boolean not null default true,
   created_at timestamptz not null default now(),
+  plan text not null default 'trial' check (plan in ('trial','monthly','yearly')),
+  expires_at timestamptz,
   card jsonb
 );
 
@@ -32,7 +34,7 @@ create index if not exists users_slug_idx on public.users (slug);
 -- Canlıya geçmeden önce bu şifreleri panelden mutlaka değiştir
 -- ya da bu demo kullanıcıyı admin panelinden silebilirsin.
 -- ------------------------------------------------------------
-insert into public.users (id, role, email, password_hash, slug, active, created_at, card)
+insert into public.users (id, role, email, password_hash, slug, active, created_at, plan, expires_at, card)
 values
 (
   'admin-1',
@@ -42,6 +44,8 @@ values
   null,
   true,
   now(),
+  'yearly',
+  null,
   null
 ),
 (
@@ -52,6 +56,8 @@ values
   'elif-yilmaz',
   true,
   now(),
+  'trial',
+  now() + interval '15 days',
   '{
     "name": "Elif Yılmaz",
     "title": "Dijital Pazarlama Uzmanı",

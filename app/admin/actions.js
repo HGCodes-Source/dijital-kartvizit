@@ -11,6 +11,7 @@ import {
   emailExists,
 } from "@/lib/db";
 import { hashPassword, requireAdmin } from "@/lib/auth";
+import { trialExpiryFromNow, computeNewExpiry } from "@/lib/subscription";
 
 function slugify(text) {
   const map = { ç: "c", ğ: "g", ı: "i", ö: "o", ş: "s", ü: "u", İ: "i" };
@@ -51,6 +52,8 @@ export async function createUserAction(prevState, formData) {
     slug: finalSlug,
     active: true,
     createdAt: new Date().toISOString(),
+    plan: "trial",
+    expiresAt: trialExpiryFromNow(),
     card: {
       name,
       title,
@@ -109,4 +112,23 @@ export async function deleteUserAction(formData) {
   await deleteUser(id);
   revalidatePath("/admin");
   redirect("/admin");
+}
+
+// Admin bir musteriye elle "Aylik" veya "Yillik" uyelik verir.
+// Hesabin hala suresi varsa mevcut bitis tarihinin uzerine ekler,
+// suresi dolmussa bugunden itibaren baslatir; ayrica hesabi aktif eder.
+export async function grantMembershipAction(formData) {
+  await requireAdmin();
+  const id = String(formData.get("id"));
+  const plan = String(formData.get("plan"));
+  if (!["monthly", "yearly"].includes(plan)) return;
+
+  const user = await getUserById(id);
+  if (!user) return;
+
+  const newExpiry = computeNewExpiry(user.expiresAt, plan);
+  await updateUser(id, { plan, expiresAt: newExpiry, active: true });
+
+  revalidatePath("/admin");
+  revalidatePath(`/admin/users/${id}`);
 }

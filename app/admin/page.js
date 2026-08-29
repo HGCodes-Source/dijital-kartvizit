@@ -3,6 +3,7 @@ import { requireAdmin } from "@/lib/auth";
 import { getUsers } from "@/lib/db";
 import { toggleActiveAction } from "./actions";
 import { logoutAction } from "@/lib/logout";
+import SubscriptionBadge from "@/components/SubscriptionBadge";
 
 export default async function AdminPage() {
   const admin = await requireAdmin();
@@ -94,6 +95,9 @@ export default async function AdminPage() {
               >
                 Giriş: {baseUrl.replace(/^https?:\/\//, "")}/{u.slug}/login
               </Link>
+              <div className="mt-3 border-t border-black/5 pt-3">
+                <SubscriptionBadge user={u} compact />
+              </div>
               <Link
                 href={`/admin/users/${u.id}`}
                 className="mt-3 block rounded-lg border border-black/10 px-3 py-1.5 text-center text-xs font-medium hover:bg-black/5"
@@ -115,6 +119,7 @@ export default async function AdminPage() {
                 <th className="px-4 py-3">E-posta</th>
                 <th className="px-4 py-3">Kartvizit Linki</th>
                 <th className="px-4 py-3">Durum</th>
+                <th className="px-4 py-3">Üyelik</th>
                 <th className="px-4 py-3 text-right">İşlemler</th>
               </tr>
             </thead>
@@ -160,6 +165,9 @@ export default async function AdminPage() {
                         {u.active ? "Aktif" : "Devre Dışı"}
                       </button>
                     </form>
+                  </td>
+                  <td className="px-4 py-3">
+                    <SubscriptionBadge user={u} />
                   </td>
                   <td className="px-4 py-3 text-right">
                     <Link
