@@ -77,45 +77,48 @@ export default function CardPreview({ card, vcardHref, qrValue, slug, hideAction
 
   return (
     <div className="mx-auto w-full max-w-[340px] overflow-hidden rounded-[1.75rem] border border-black/5 bg-white shadow-foilGlow">
-      {/* ---- "Fiziksel kart" başlığı ---- */}
+      {/* ---- "Fiziksel kart" başlığı — gerçek kart oranında (1.586:1) ---- */}
       <div
-        className="relative overflow-hidden px-6 pb-7 pt-5"
-        style={{ background: `linear-gradient(135deg, ${themeLight}, ${themeDark})` }}
+        className="relative flex w-full flex-col justify-between overflow-hidden px-5 py-4"
+        style={{
+          background: `linear-gradient(135deg, ${themeLight}, ${themeDark})`,
+          aspectRatio: "1.586 / 1",
+        }}
       >
         {/* Filigran baş harf */}
         <div
           aria-hidden
-          className="pointer-events-none absolute -right-4 -top-6 select-none font-display text-[9rem] font-bold leading-none text-transparent"
+          className="pointer-events-none absolute -right-3 -top-4 select-none font-display text-[6.5rem] font-bold leading-none text-transparent"
           style={{
             backgroundImage: "linear-gradient(135deg,#E8C9A0,#B8794A)",
             WebkitBackgroundClip: "text",
             backgroundClip: "text",
-            opacity: 0.08,
+            opacity: 0.09,
           }}
         >
           {initials(card.name) || "?"}
         </div>
 
         {/* Çip + temassız simgesi */}
-        <div className="relative mb-6 flex items-center justify-between">
+        <div className="relative flex items-center justify-between">
           <ChipMark />
           <ContactlessMark />
         </div>
 
-        {/* Avatar */}
-        <div className="relative flex flex-col items-center">
-          <div className="rounded-full bg-gradient-to-br from-foilStart to-foilEnd p-[2px]">
+        {/* Avatar + isim (yatay - gerçek karttaki gibi) */}
+        <div className="relative flex items-center gap-3">
+          <div className="shrink-0 rounded-full bg-gradient-to-br from-foilStart to-foilEnd p-[2px]">
             {card.avatarUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={card.avatarUrl}
                 alt={card.name}
-                className="h-16 w-16 rounded-full border-2 object-cover"
+                className="h-12 w-12 rounded-full border-2 object-cover"
                 style={{ borderColor: themeDark }}
               />
             ) : (
               <div
-                className="flex h-16 w-16 items-center justify-center rounded-full border-2 font-display text-lg font-semibold text-foilStart"
+                className="flex h-12 w-12 items-center justify-center rounded-full border-2 font-display text-base font-semibold text-foilStart"
                 style={{ borderColor: themeDark, backgroundColor: themeLight }}
               >
                 {initials(card.name) || "?"}
@@ -123,45 +126,51 @@ export default function CardPreview({ card, vcardHref, qrValue, slug, hideAction
             )}
           </div>
 
-          <h2 className="mt-3 text-center font-display text-lg font-semibold text-white">
-            {card.name || "İsim Soyisim"}
-          </h2>
-          {card.title && (
-            <p className="text-center text-xs text-white/60">{card.title}</p>
-          )}
-          {card.company && (
-            <p className="text-center text-[11px] text-white/35">{card.company}</p>
-          )}
-          {slug && (
-            <p className="mt-1.5 font-mono text-[10px] tracking-wide text-foilStart/70">
-              /kart/{slug}
-            </p>
-          )}
-
-          {iconLinks.length > 0 && (
-            <div className="mt-4 flex flex-wrap justify-center gap-2">
-              {iconLinks.map((l) => {
-                const p = getPlatform(l.platform);
-                return (
-                  <a
-                    key={l.id}
-                    href={p.buildUrl(l.value)}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] backdrop-blur transition hover:border-foilStart/40 hover:bg-white/10"
-                    title={p.label}
-                  >
-                    <Icon name={p.icon} size={15} className="text-white/90" />
-                  </a>
-                );
-              })}
-            </div>
-          )}
+          <div className="min-w-0">
+            <h2 className="truncate font-display text-base font-semibold text-white">
+              {card.name || "İsim Soyisim"}
+            </h2>
+            {card.title && (
+              <p className="truncate text-xs text-white/60">{card.title}</p>
+            )}
+            {card.company && (
+              <p className="truncate text-[10px] text-white/35">
+                {card.company}
+              </p>
+            )}
+            {slug && (
+              <p className="mt-0.5 truncate font-mono text-[9px] tracking-wide text-foilStart/70">
+                /kart/{slug}
+              </p>
+            )}
+          </div>
         </div>
       </div>
 
+      {/* ---- Sosyal ikon satırı (kartın hemen altında) ---- */}
+      {iconLinks.length > 0 && (
+        <div className="flex flex-wrap justify-center gap-2 bg-porcelain px-4 pt-4">
+          {iconLinks.map((l) => {
+            const p = getPlatform(l.platform);
+            return (
+              <a
+                key={l.id}
+                href={p.buildUrl(l.value)}
+                target="_blank"
+                rel="noreferrer"
+                className="flex h-9 w-9 items-center justify-center rounded-full transition hover:brightness-95"
+                style={{ backgroundColor: `${p.color}1A` }}
+                title={p.label}
+              >
+                <Icon name={p.icon} size={15} style={{ color: p.color }} />
+              </a>
+            );
+          })}
+        </div>
+      )}
+
       {/* ---- Bağlantı listesi ---- */}
-      <div className="space-y-2 bg-porcelain px-4 py-4">
+      <div className="space-y-2 bg-porcelain px-4 pb-4 pt-3">
         {links.length === 0 && (
           <p className="py-6 text-center text-xs text-slate">
             Henüz eklenmiş bir bağlantı yok.
