@@ -1,5 +1,7 @@
 "use client";
 
+import { Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import { loginAction } from "./actions";
@@ -14,6 +16,17 @@ function SubmitButton() {
     >
       {pending ? "Giriş yapılıyor..." : "Giriş Yap"}
     </button>
+  );
+}
+
+function TimeoutBanner() {
+  const searchParams = useSearchParams();
+  if (searchParams.get("timeout") !== "1") return null;
+  return (
+    <p className="mb-4 rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-700">
+      Uzun süre işlem yapılmadığı için oturumunuz güvenlik amacıyla
+      sonlandırıldı. Tekrar giriş yapabilirsiniz.
+    </p>
   );
 }
 
@@ -32,6 +45,10 @@ export default function LoginPage() {
             <p className="text-xs leading-none text-slate mt-1">Yönetim Paneli</p>
           </div>
         </div>
+
+        <Suspense fallback={null}>
+          <TimeoutBanner />
+        </Suspense>
 
         <form action={formAction} className="space-y-4">
           <div>
