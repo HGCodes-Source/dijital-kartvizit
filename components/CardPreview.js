@@ -13,6 +13,28 @@ function initials(name = "") {
     .join("");
 }
 
+// Secilen kart rengini acar/koyulastirir (gradyan icin iki ton uretmek amacli).
+function shade(hex, percent) {
+  const clean = /^#([0-9a-f]{6})$/i.test(hex) ? hex : "#0F1B33";
+  const f = parseInt(clean.slice(1), 16);
+  const t = percent < 0 ? 0 : 255;
+  const p = Math.abs(percent);
+  const R = f >> 16;
+  const G = (f >> 8) & 0x00ff;
+  const B = f & 0x0000ff;
+  return (
+    "#" +
+    (
+      0x1000000 +
+      (Math.round((t - R) * p) + R) * 0x10000 +
+      (Math.round((t - G) * p) + G) * 0x100 +
+      (Math.round((t - B) * p) + B)
+    )
+      .toString(16)
+      .slice(1)
+  );
+}
+
 function ContactlessMark({ className = "" }) {
   return (
     <span className={`relative flex h-5 w-5 items-center justify-center ${className}`}>
@@ -41,6 +63,10 @@ export default function CardPreview({ card, vcardHref, qrValue, slug, hideAction
     .sort((a, b) => a.order - b.order);
   const iconLinks = links.filter((l) => getPlatform(l.platform).showAsIcon);
 
+  const baseTheme = card.theme || "#0F1B33";
+  const themeLight = shade(baseTheme, 0.18);
+  const themeDark = shade(baseTheme, -0.35);
+
   function handleCopy(id, value) {
     if (navigator?.clipboard) {
       navigator.clipboard.writeText(value).catch(() => {});
@@ -52,7 +78,10 @@ export default function CardPreview({ card, vcardHref, qrValue, slug, hideAction
   return (
     <div className="mx-auto w-full max-w-[340px] overflow-hidden rounded-[1.75rem] border border-black/5 bg-white shadow-foilGlow">
       {/* ---- "Fiziksel kart" başlığı ---- */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-carbon2 to-carbon px-6 pb-7 pt-5">
+      <div
+        className="relative overflow-hidden px-6 pb-7 pt-5"
+        style={{ background: `linear-gradient(135deg, ${themeLight}, ${themeDark})` }}
+      >
         {/* Filigran baş harf */}
         <div
           aria-hidden
@@ -81,10 +110,14 @@ export default function CardPreview({ card, vcardHref, qrValue, slug, hideAction
               <img
                 src={card.avatarUrl}
                 alt={card.name}
-                className="h-16 w-16 rounded-full border-2 border-carbon object-cover"
+                className="h-16 w-16 rounded-full border-2 object-cover"
+                style={{ borderColor: themeDark }}
               />
             ) : (
-              <div className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-carbon bg-carbon2 font-display text-lg font-semibold text-foilStart">
+              <div
+                className="flex h-16 w-16 items-center justify-center rounded-full border-2 font-display text-lg font-semibold text-foilStart"
+                style={{ borderColor: themeDark, backgroundColor: themeLight }}
+              >
                 {initials(card.name) || "?"}
               </div>
             )}
