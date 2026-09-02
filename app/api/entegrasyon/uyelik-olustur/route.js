@@ -1,31 +1,21 @@
 // ============================================================
-// BU DOSYAYI DİJİTAL KARTVİZİT PROJESİNE ekleyin:
 // app/api/entegrasyon/uyelik-olustur/route.js
 //
-// lib/auth.js'deki AYNI şifreleme yöntemini (Node crypto.scrypt,
-// "salt:hash" formatı) burada da kullanıyoruz ki bu şekilde oluşan
-// hesaplar normal giriş ekranınızdan sorunsuz giriş yapabilsin.
-//
-// Kalan tek soru: "plan" sütununda aylık paket için hangi kelime
-// kullanılıyor? Şimdilik "monthly" yazdım — "trial" ve "yearly" gibi
-// başka bir kelime kullanıyorsanız haber verin, tek satır değişir.
+// Ne işe yarar: Satış sitesi (HSG Dijital) bir sipariş onaylandığında
+// buraya bir istek atar; bu kod da Supabase veritabanınızda müşteriyi
+// bulur (yoksa oluşturur) ve üyelik bitiş tarihini günceller.
 // ============================================================
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { getSupabaseAdmin } from "@/lib/supabaseClient";
 import crypto from "crypto";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY // service_role anahtarı (ANON KEY değil!)
-);
-
-// lib/auth.js'deki hashPassword ile BİREBİR AYNI mantık — iki dosyada
-// aynı şeyi yazmamak isterseniz oradaki fonksiyonu import edip
-// kullanabilirsiniz: import { hashPassword } from "@/lib/auth";
+// lib/auth.js'deki hashPassword ile BİREBİR AYNI mantık (Node'un
+// yerleşik crypto.scrypt'i, "salt:hash" formatı) — böylece burada
+// oluşan hesaplar normal giriş ekranınızdan sorunsuz giriş yapabilir.
 function hashPassword(password) {
   const salt = crypto.randomBytes(16).toString("hex");
   const derived = crypto.scryptSync(password, salt, 64).toString("hex");
-  return `${salt}:${derived}`;
+  return '${salt}:${derived}';
 }
 
 // Yeni müşteri için okunabilir, rastgele bir şifre üretir (ör. "k3f9m2xa1q")
@@ -33,6 +23,8 @@ function rastgeleSifreUret() {
   return crypto.randomBytes(8).toString("base64url").slice(0, 10);
 }
 
+// "Elif Yılmaz" → "elif-yilmaz" gibi basit bir slug üretici
+// (herkese açık kartvizit linki için kullanılıyor)
 function slugUret(isim) {
   const temel = isim
     .toLocaleLowerCase("tr-TR")
@@ -57,9 +49,9 @@ export async function POST(istek) {
     return NextResponse.json({ hata: "email ve bitisTarihi zorunlu." }, { status: 400 });
   }
 
-  // "monthly"/"yearly" bekleniyor — satış sitesi zaten bu kelimelerle gönderiyor.
-  // Farklıysa burada bir çeviri satırı eklenir.
-  const planDegeri = plan;
+  // Projenizde zaten hazır olan supabase istemcisini kullanıyoruz
+  // (lib/supabaseClient.js) — kendi client'ımızı oluşturmuyoruz.
+  const supabase = getSupabaseAdmin();
 
   // 3) Bu e-posta zaten var mı diye bak
   const { data: mevcutKullanici } = await supabase
@@ -74,7 +66,7 @@ export async function POST(istek) {
     const { error } = await supabase
       .from("users")
       .update({
-        plan: planDegeri,
+        plan,
         expires_at: bitisTarihi,
         active: true,
       })
@@ -93,14 +85,14 @@ export async function POST(istek) {
   const gecicSifre = rastgeleSifreUret();
 
   const { error } = await supabase.from("users").insert({
-    id: `user-${Date.now()}`,
+    id: `user-${Date.now()}',
     role: "user",
     email,
     password_hash: hashPassword(gecicSifre),
     slug: slugUret(isim),
     active: true,
     card: { bio: "", name: isim, links: [] },
-    plan: planDegeri,
+    plan,
     expires_at: bitisTarihi,
   });
 
