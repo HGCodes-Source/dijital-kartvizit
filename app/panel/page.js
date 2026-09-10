@@ -1,6 +1,38 @@
 import { requireUser } from "@/lib/auth";
 import { logoutAction } from "@/lib/logout";
 import PanelEditor from "./PanelEditor";
+import { PLAN_LABELS, daysRemaining, formatExpiryDate } from "@/lib/subscription";
+
+function SubscriptionBanner({ user }) {
+  const remaining = daysRemaining(user);
+
+  if (user.plan === "trial") {
+    const urgent = remaining !== null && remaining <= 3;
+    return (
+      <div
+        className={`mb-6 rounded-xl border px-4 py-3 text-xs ${
+          urgent
+            ? "border-red-200 bg-red-50 text-red-700"
+            : "border-amber-200 bg-amber-50 text-amber-700"
+        }`}
+      >
+        <span className="font-semibold">
+          {remaining !== null && remaining >= 0
+            ? `Deneme sürene ${remaining} gün kaldı.`
+            : "Deneme süren sona erdi."}
+        </span>{" "}
+        Üyeliğini devam ettirmek için yöneticinle iletişime geç.
+      </div>
+    );
+  }
+
+  return (
+    <div className="mb-6 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-xs text-green-700">
+      <span className="font-semibold">{PLAN_LABELS[user.plan] || "Üyelik"}</span>{" "}
+      · bitiş tarihi: {formatExpiryDate(user.expiresAt)}
+    </div>
+  );
+}
 
 export default async function PanelPage() {
   const user = await requireUser();
@@ -27,10 +59,13 @@ export default async function PanelPage() {
         </div>
       </header>
 
+      <SubscriptionBanner user={user} />
+
       <PanelEditor
         initialCard={user.card}
         slug={user.slug}
         baseUrl={baseUrl}
+        viewCount={user.viewCount || 0}
       />
     </main>
   );

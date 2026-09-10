@@ -14,8 +14,15 @@ create table if not exists public.users (
   created_at timestamptz not null default now(),
   plan text not null default 'trial' check (plan in ('trial','monthly','yearly')),
   expires_at timestamptz,
+  view_count integer not null default 0,
   card jsonb
 );
+
+-- Kartvizit goruntulenme sayacini atomik (yaris durumu olmadan) artirir.
+create or replace function public.increment_view_count(user_id text)
+returns void as $$
+  update public.users set view_count = view_count + 1 where id = user_id;
+$$ language sql;
 
 -- E-postanın büyük/küçük harf farkı gözetmeden benzersiz olması için
 create unique index if not exists users_email_unique_idx on public.users (lower(email));

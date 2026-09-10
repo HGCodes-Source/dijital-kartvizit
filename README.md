@@ -212,15 +212,38 @@ lib/
   platforms.js      desteklenen bağlantı/sosyal medya türleri (IBAN dahil)
   vcard.js          .vcf (vCard) üretimi
 supabase/
-  schema.sql              yeni kurulum için tam şema + demo veri
-  migration-membership.sql mevcut veritabanına üyelik sütunlarını ekler
+  schema.sql                 yeni kurulum için tam şema + demo veri
+  migration-membership.sql   mevcut veritabanına üyelik sütunlarını ekler
+  migration-view-count.sql   mevcut veritabanına görüntülenme sayacını ekler
 vercel.json         günlük cron görevi zamanlaması
 ```
 
+## Bu sürümde ayrıca eklenenler
+
+- **"Hakkımda" alanı**: panelde isim/unvanın altında kısa (160 karakter)
+  bir açıklama girilebiliyor, kartvizit sayfasında başlığın altında
+  gösteriliyor.
+- **Müşteri kendi üyelik durumunu görüyor**: panelin üstünde deneme
+  süresi/üyelik bitiş tarihi bir uyarı şeridi olarak gösteriliyor (son 3
+  günde kırmızıya dönüyor).
+- **Görüntülenme sayacı**: her `/kart/[slug]` ziyaretinde artan, atomik
+  bir sayaç (Postgres fonksiyonu ile — yarış durumu olmaz). Hem admin
+  panelinde her müşterinin yanında hem de müşterinin kendi panelinde
+  görünüyor. Mevcut bir veritabanına eklemek için
+  `supabase/migration-view-count.sql`'i çalıştırman gerekiyor.
+- **Native paylaşım butonu**: kartvizit sayfasında "Paylaş" butonu,
+  telefonun kendi paylaşım menüsünü açar (WhatsApp, SMS vb.); tarayıcı
+  desteklemiyorsa linki panoya kopyalar.
+- **Silme işleminde onay penceresi**: admin "Kullanıcıyı Sil"e bastığında
+  artık bir onay penceresi çıkıyor, yanlışlıkla silme riski azaldı.
+
 ## Sırada ne var? (öneriler)
 
-- Admin tarafında paket/plan (ör. "1 yıllık", "yaşam boyu") ve son ödeme
-  tarihi takibi.
-- Kartvizit görüntülenme/tıklanma istatistikleri.
 - Çok sayıda/yüksek çözünürlüklü fotoğraf biriktirirse Supabase Storage'a
   (veya benzeri bir dosya deposuna) geçiş.
+- Deneme süresi bitmeden önce müşteriye e-posta ile hatırlatma (şu an
+  sadece panelde görsel bir uyarı var, e-posta göndermek için ayrı bir
+  servis — ör. Resend — entegre etmek gerekir).
+- Şifremi unuttum akışı (şu an yok; şifre sıfırlama sadece admin
+  panelinden yapılabiliyor).
+

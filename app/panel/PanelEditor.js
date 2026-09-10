@@ -11,7 +11,7 @@ function uid() {
   return Math.random().toString(36).slice(2, 9);
 }
 
-export default function PanelEditor({ initialCard, slug, baseUrl }) {
+export default function PanelEditor({ initialCard, slug, baseUrl, viewCount }) {
   const [card, setCard] = useState(() => ({
     name: initialCard?.name || "",
     title: initialCard?.title || "",
@@ -141,7 +141,24 @@ export default function PanelEditor({ initialCard, slug, baseUrl }) {
             </div>
           </div>
 
-          <div className="mt-4 border-t border-black/5 pt-4">
+          <div className="mt-4">
+            <label className="mb-1 block text-xs font-medium text-slate">
+              Hakkımda (opsiyonel)
+            </label>
+            <textarea
+              value={card.bio}
+              onChange={(e) => update("bio", e.target.value)}
+              rows={2}
+              maxLength={160}
+              placeholder="Kartında, unvanının altında görünecek kısa bir açıklama. Ör: '8 yıllık deneyim, randevu için mesaj atın.'"
+              className="w-full resize-none rounded-lg border border-black/10 px-3 py-2.5 text-sm outline-none focus:border-ink"
+            />
+            <p className="mt-1 text-right text-[11px] text-slate">
+              {card.bio.length}/160
+            </p>
+          </div>
+
+          <div className="mt-2 border-t border-black/5 pt-4">
             <AvatarUploader
               name={card.name}
               value={card.avatarUrl}
@@ -277,11 +294,16 @@ export default function PanelEditor({ initialCard, slug, baseUrl }) {
           sayfada)
         </p>
         <CardPreview card={card} slug={slug} hideActions />
+        <div className="mt-3 flex items-center justify-center gap-1.5 text-xs text-slate">
+          <Icon name="Eye" size={14} strokeWidth={1.75} />
+          Kartın <span className="font-semibold text-ink">{viewCount || 0}</span> kere
+          görüntülendi
+        </div>
         <a
           href={`/kart/${slug}`}
           target="_blank"
           rel="noreferrer"
-          className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-ink py-3 text-sm font-semibold text-white hover:bg-ink/90"
+          className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-ink py-3 text-sm font-semibold text-white hover:bg-ink/90"
         >
           <Icon name="QrCode" size={16} strokeWidth={1.75} />
           Canlı Sayfayı Aç (QR / paylaşım için)

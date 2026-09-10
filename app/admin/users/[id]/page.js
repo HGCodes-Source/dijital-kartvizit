@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { requireAdmin } from "@/lib/auth";
 import { getUserById } from "@/lib/db";
 import EditUserForm from "./EditUserForm";
-import { deleteUserAction } from "../../actions";
+import DeleteUserForm from "./DeleteUserForm";
 import SubscriptionBadge from "@/components/SubscriptionBadge";
 
 export default async function EditUserPage({ params }) {
@@ -41,22 +41,14 @@ export default async function EditUserPage({ params }) {
       <section className="mt-4 rounded-xl2 border border-black/5 bg-white p-4 sm:p-6">
         <h2 className="mb-3 text-sm font-semibold">Üyelik Durumu</h2>
         <SubscriptionBadge user={user} compact />
+        <p className="mt-3 text-xs text-slate">
+          👁 Kartvizit {user.viewCount || 0} kere görüntülendi
+        </p>
       </section>
 
       <EditUserForm user={user} />
 
-      <form
-        action={deleteUserAction}
-        className="mt-4 rounded-xl2 border border-red-200 bg-red-50 p-4"
-      >
-        <input type="hidden" name="id" value={user.id} />
-        <p className="mb-2 text-xs text-red-700">
-          Bu hesabı ve kartvizitini kalıcı olarak siler.
-        </p>
-        <button className="rounded-lg border border-red-300 bg-white px-3 py-1.5 text-xs font-medium text-red-700 hover:bg-red-100">
-          Kullanıcıyı Sil
-        </button>
-      </form>
+      <DeleteUserForm userId={user.id} userName={user.card?.name} />
     </main>
   );
 }

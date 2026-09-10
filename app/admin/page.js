@@ -88,6 +88,9 @@ export default async function AdminPage() {
               >
                 {baseUrl.replace(/^https?:\/\//, "")}/kart/{u.slug}
               </Link>
+              <p className="mt-0.5 text-xs text-slate">
+                👁 {u.viewCount || 0} görüntülenme
+              </p>
               <Link
                 href={`/${u.slug}/login`}
                 target="_blank"
@@ -150,6 +153,7 @@ export default async function AdminPage() {
                       >
                         /{u.slug}/login
                       </Link>
+                      {" · "}👁 {u.viewCount || 0}
                     </div>
                   </td>
                   <td className="px-4 py-3">

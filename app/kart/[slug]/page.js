@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getUserBySlug } from "@/lib/db";
+import { getUserBySlug, incrementViewCount } from "@/lib/db";
 import CardPreview from "@/components/CardPreview";
 
 function InactiveCardPage() {
@@ -60,6 +60,15 @@ export default async function PublicCardPage({ params }) {
   const user = await getUserBySlug(slug);
   if (!user) notFound();
   if (user.active === false) return <InactiveCardPage />;
+
+  // Goruntulenme sayacini artir - sunucusuz ortamda (Vercel) yaniti
+  // gonderdikten sonra islem yarida kesilebilir, bu yuzden await ediyoruz.
+  // Hata olursa sayfa acilisini engellemesin diye yutuyoruz.
+  try {
+    await incrementViewCount(user.id);
+  } catch {
+    // sessizce yut - kritik degil
+  }
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
   const publicUrl = `${baseUrl}/kart/${slug}`;

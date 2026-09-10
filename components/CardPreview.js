@@ -58,6 +58,7 @@ function ChipMark() {
 
 export default function CardPreview({ card, vcardHref, qrValue, slug, hideActions }) {
   const [copiedId, setCopiedId] = useState(null);
+  const [shareCopied, setShareCopied] = useState(false);
   const links = (card.links || [])
     .filter((l) => l.visible)
     .sort((a, b) => a.order - b.order);
@@ -73,6 +74,24 @@ export default function CardPreview({ card, vcardHref, qrValue, slug, hideAction
     }
     setCopiedId(id);
     setTimeout(() => setCopiedId((cur) => (cur === id ? null : cur)), 1800);
+  }
+
+  async function handleShare() {
+    if (navigator?.share) {
+      try {
+        await navigator.share({
+          title: card.name || "Dijital Kartvizit",
+          text: card.title || "",
+          url: qrValue,
+        });
+      } catch {
+        // kullanici paylasim penceresini kapattiysa sessizce gec
+      }
+    } else if (navigator?.clipboard) {
+      navigator.clipboard.writeText(qrValue).catch(() => {});
+      setShareCopied(true);
+      setTimeout(() => setShareCopied(false), 1800);
+    }
   }
 
   return (
@@ -146,6 +165,13 @@ export default function CardPreview({ card, vcardHref, qrValue, slug, hideAction
           </div>
         </div>
       </div>
+
+      {/* ---- Hakkında (varsa) ---- */}
+      {card.bio && (
+        <p className="line-clamp-3 bg-porcelain px-5 pt-4 text-center text-xs leading-relaxed text-ink/70">
+          {card.bio}
+        </p>
+      )}
 
       {/* ---- Sosyal ikon satırı (kartın hemen altında) ---- */}
       {iconLinks.length > 0 && (
@@ -270,14 +296,33 @@ export default function CardPreview({ card, vcardHref, qrValue, slug, hideAction
           </div>
         )}
 
-        {!hideActions && vcardHref && (
-          <a
-            href={vcardHref}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-foilStart to-foilEnd py-3 text-sm font-semibold text-carbon shadow-sm transition hover:brightness-105"
-          >
-            <Icon name="Download" size={16} strokeWidth={1.75} />
-            Kartviziti Kaydet
-          </a>
+        {!hideActions && (vcardHref || qrValue) && (
+          <div className="flex gap-2">
+            {vcardHref && (
+              <a
+                href={vcardHref}
+                className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-foilStart to-foilEnd py-3 text-sm font-semibold text-carbon shadow-sm transition hover:brightness-105"
+              >
+                <Icon name="Download" size={16} strokeWidth={1.75} />
+                Kaydet
+              </a>
+            )}
+            {qrValue && (
+              <button
+                type="button"
+                onClick={handleShare}
+                className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-black/10 bg-white py-3 text-sm font-semibold text-ink transition hover:bg-black/[0.02]"
+              >
+                <Icon
+                  name={shareCopied ? "Check" : "Share2"}
+                  size={16}
+                  strokeWidth={1.75}
+                  className={shareCopied ? "text-green-600" : ""}
+                />
+                {shareCopied ? "Kopyalandı" : "Paylaş"}
+              </button>
+            )}
+          </div>
         )}
 
         {!hideActions && qrValue && (

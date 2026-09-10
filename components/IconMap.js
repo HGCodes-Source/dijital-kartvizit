@@ -37,6 +37,7 @@ import {
   FileText,
   AtSign,
   Palette,
+  Share2,
 } from "lucide-react";
 
 const ICONS = {
@@ -76,6 +77,7 @@ const ICONS = {
   FileText,
   AtSign,
   Palette,
+  Share2,
 };
 
 export default function Icon({ name, ...props }) {
