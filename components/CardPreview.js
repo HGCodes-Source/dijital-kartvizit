@@ -149,7 +149,7 @@ export default function CardPreview({ card, vcardHref, qrValue, slug, hideAction
 
       {/* ---- Sosyal ikon satırı (kartın hemen altında) ---- */}
       {iconLinks.length > 0 && (
-        <div className="flex flex-wrap justify-center gap-2 bg-porcelain px-4 pt-4">
+        <div className="flex flex-wrap justify-center gap-2.5 bg-porcelain px-4 pt-4">
           {iconLinks.map((l) => {
             const p = getPlatform(l.platform);
             return (
@@ -158,11 +158,19 @@ export default function CardPreview({ card, vcardHref, qrValue, slug, hideAction
                 href={p.buildUrl(l.value)}
                 target="_blank"
                 rel="noreferrer"
-                className="flex h-9 w-9 items-center justify-center rounded-full transition hover:brightness-95"
-                style={{ backgroundColor: `${p.color}1A` }}
+                className="flex h-10 w-10 items-center justify-center rounded-full border transition hover:shadow-md hover:brightness-95"
+                style={{
+                  background: `linear-gradient(135deg, ${p.color}26, ${p.color}0D)`,
+                  borderColor: `${p.color}30`,
+                }}
                 title={p.label}
               >
-                <Icon name={p.icon} size={15} style={{ color: p.color }} />
+                <Icon
+                  name={p.icon}
+                  size={16}
+                  strokeWidth={1.75}
+                  style={{ color: p.color }}
+                />
               </a>
             );
           })}
@@ -170,79 +178,110 @@ export default function CardPreview({ card, vcardHref, qrValue, slug, hideAction
       )}
 
       {/* ---- Bağlantı listesi ---- */}
-      <div className="space-y-2 bg-porcelain px-4 pb-4 pt-3">
+      <div className="space-y-3 bg-porcelain px-4 pb-4 pt-3">
         {links.length === 0 && (
           <p className="py-6 text-center text-xs text-slate">
             Henüz eklenmiş bir bağlantı yok.
           </p>
         )}
-        {links.map((l) => {
-          const p = getPlatform(l.platform);
 
-          if (p.copyable) {
-            const isCopied = copiedId === l.id;
-            return (
-              <button
-                key={l.id}
-                type="button"
-                onClick={() => handleCopy(l.id, l.value)}
-                className="flex w-full items-center justify-between rounded-xl bg-white px-4 py-3 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
-              >
-                <span className="flex items-center gap-3">
-                  <span
-                    className="flex h-8 w-8 items-center justify-center rounded-lg"
-                    style={{ backgroundColor: `${p.color}1A` }}
+        {links.length > 0 && (
+          <div className="divide-y divide-black/[0.05] overflow-hidden rounded-2xl border border-black/[0.05] bg-white shadow-sm">
+            {links.map((l) => {
+              const p = getPlatform(l.platform);
+
+              if (p.copyable) {
+                const isCopied = copiedId === l.id;
+                return (
+                  <button
+                    key={l.id}
+                    type="button"
+                    onClick={() => handleCopy(l.id, l.value)}
+                    className="flex w-full items-center justify-between px-4 py-3.5 text-left transition hover:bg-black/[0.02]"
                   >
-                    <Icon name={p.icon} size={16} style={{ color: p.color }} />
-                  </span>
-                  <span className="flex flex-col">
-                    <span className="text-sm font-medium">{p.buttonLabel}</span>
-                    <span className="font-mono text-[11px] text-slate">{l.value}</span>
-                  </span>
-                </span>
-                <Icon
-                  name={isCopied ? "Check" : "Copy"}
-                  size={16}
-                  className={isCopied ? "text-green-600" : "text-slate"}
-                />
-              </button>
-            );
-          }
+                    <span className="flex min-w-0 items-center gap-3">
+                      <span
+                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border"
+                        style={{
+                          background: `linear-gradient(135deg, ${p.color}26, ${p.color}0D)`,
+                          borderColor: `${p.color}26`,
+                        }}
+                      >
+                        <Icon
+                          name={p.icon}
+                          size={16}
+                          strokeWidth={1.75}
+                          style={{ color: p.color }}
+                        />
+                      </span>
+                      <span className="flex min-w-0 flex-col">
+                        <span className="text-sm font-medium">{p.buttonLabel}</span>
+                        <span className="truncate font-mono text-[11px] text-slate">
+                          {l.value}
+                        </span>
+                      </span>
+                    </span>
+                    <Icon
+                      name={isCopied ? "Check" : "Copy"}
+                      size={16}
+                      strokeWidth={1.75}
+                      className={`shrink-0 ${isCopied ? "text-green-600" : "text-slate/70"}`}
+                    />
+                  </button>
+                );
+              }
 
-          return (
-            <a
-              key={l.id}
-              href={p.buildUrl(l.value)}
-              target="_blank"
-              rel="noreferrer"
-              className="flex items-center justify-between rounded-xl bg-white px-4 py-3 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
-            >
-              <span className="flex items-center gap-3">
-                <span
-                  className="flex h-8 w-8 items-center justify-center rounded-lg"
-                  style={{ backgroundColor: `${p.color}1A` }}
+              return (
+                <a
+                  key={l.id}
+                  href={p.buildUrl(l.value)}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center justify-between px-4 py-3.5 transition hover:bg-black/[0.02]"
                 >
-                  <Icon name={p.icon} size={16} style={{ color: p.color }} />
-                </span>
-                <span className="text-sm font-medium">{p.buttonLabel}</span>
-              </span>
-              <Icon name="ChevronRight" size={16} className="text-slate" />
-            </a>
-          );
-        })}
+                  <span className="flex min-w-0 items-center gap-3">
+                    <span
+                      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border"
+                      style={{
+                        background: `linear-gradient(135deg, ${p.color}26, ${p.color}0D)`,
+                        borderColor: `${p.color}26`,
+                      }}
+                    >
+                      <Icon
+                        name={p.icon}
+                        size={16}
+                        strokeWidth={1.75}
+                        style={{ color: p.color }}
+                      />
+                    </span>
+                    <span className="truncate text-sm font-medium">
+                      {p.buttonLabel}
+                    </span>
+                  </span>
+                  <Icon
+                    name="ChevronRight"
+                    size={16}
+                    strokeWidth={1.75}
+                    className="shrink-0 text-slate/50"
+                  />
+                </a>
+              );
+            })}
+          </div>
+        )}
 
         {!hideActions && vcardHref && (
           <a
             href={vcardHref}
-            className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-foilStart to-foilEnd py-3 text-sm font-semibold text-carbon shadow-sm transition hover:brightness-105"
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-foilStart to-foilEnd py-3 text-sm font-semibold text-carbon shadow-sm transition hover:brightness-105"
           >
-            <Icon name="Download" size={16} />
+            <Icon name="Download" size={16} strokeWidth={1.75} />
             Kartviziti Kaydet
           </a>
         )}
 
         {!hideActions && qrValue && (
-          <div className="flex flex-col items-center gap-2 pt-3">
+          <div className="flex flex-col items-center gap-2 pt-1">
             <div className="rounded-xl border border-black/5 bg-white p-2">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img

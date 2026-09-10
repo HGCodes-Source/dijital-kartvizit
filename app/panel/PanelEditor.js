@@ -159,7 +159,7 @@ export default function PanelEditor({ initialCard, slug, baseUrl }) {
               onClick={addLink}
               className="flex items-center gap-1 rounded-lg bg-ink px-3 py-1.5 text-xs font-semibold text-white hover:bg-ink/90"
             >
-              <Icon name="Plus" size={14} />
+              <Icon name="Plus" size={14} strokeWidth={1.75} />
               Bağlantı Ekle
             </button>
           </div>
@@ -214,6 +214,7 @@ export default function PanelEditor({ initialCard, slug, baseUrl }) {
                       <Icon
                         name={l.visible ? "Eye" : "EyeOff"}
                         size={14}
+                        strokeWidth={1.75}
                         className={l.visible ? "text-green-600" : "text-slate"}
                       />
                     </button>
@@ -223,7 +224,7 @@ export default function PanelEditor({ initialCard, slug, baseUrl }) {
                       disabled={i === 0}
                       className="rounded-lg border border-black/10 p-2 hover:bg-black/5 disabled:opacity-30"
                     >
-                      <Icon name="ArrowUp" size={14} />
+                      <Icon name="ArrowUp" size={14} strokeWidth={1.75} />
                     </button>
                     <button
                       type="button"
@@ -231,14 +232,14 @@ export default function PanelEditor({ initialCard, slug, baseUrl }) {
                       disabled={i === sortedLinks.length - 1}
                       className="rounded-lg border border-black/10 p-2 hover:bg-black/5 disabled:opacity-30"
                     >
-                      <Icon name="ArrowDown" size={14} />
+                      <Icon name="ArrowDown" size={14} strokeWidth={1.75} />
                     </button>
                     <button
                       type="button"
                       onClick={() => removeLink(l.id)}
                       className="ml-auto rounded-lg border border-red-200 p-2 text-red-600 hover:bg-red-50"
                     >
-                      <Icon name="Trash2" size={14} />
+                      <Icon name="Trash2" size={14} strokeWidth={1.75} />
                     </button>
                   </div>
                 </div>
@@ -282,7 +283,7 @@ export default function PanelEditor({ initialCard, slug, baseUrl }) {
           rel="noreferrer"
           className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-ink py-3 text-sm font-semibold text-white hover:bg-ink/90"
         >
-          <Icon name="QrCode" size={16} />
+          <Icon name="QrCode" size={16} strokeWidth={1.75} />
           Canlı Sayfayı Aç (QR / paylaşım için)
         </a>
         <p className="mt-3 break-all rounded-lg bg-black/[0.03] px-3 py-2 text-center text-[11px] text-slate">
