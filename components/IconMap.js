@@ -30,6 +30,13 @@ import {
   Camera,
   Upload,
   X,
+  Star,
+  CalendarCheck,
+  ShoppingBag,
+  ShoppingCart,
+  FileText,
+  AtSign,
+  Palette,
 } from "lucide-react";
 
 const ICONS = {
@@ -62,6 +69,13 @@ const ICONS = {
   Camera,
   Upload,
   X,
+  Star,
+  CalendarCheck,
+  ShoppingBag,
+  ShoppingCart,
+  FileText,
+  AtSign,
+  Palette,
 };
 
 export default function Icon({ name, ...props }) {
